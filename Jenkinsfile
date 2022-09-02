@@ -35,11 +35,13 @@ pipeline {
             }
         }
         stage ('API Test') {
-                    steps {
-                       git 'https://github.com/cleidegomides/tasks-api-test'
-                       bat 'mvn test'
-                    }
-                }
+           steps {
+              dir('api-test') {
+                  git 'https://github.com/cleidegomides/tasks-api-test'
+                  bat 'mvn test'
+              }
+           }
+        }
     }
 }
 
