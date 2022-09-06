@@ -65,7 +65,28 @@ pipeline {
                    bat 'docker-compose up -d'
                }
         }
+        stage ('Health Check') {
+            steps {
+                sleep(5)
+                dir('functional-test') {
+                    bat 'mvn verify -Dskip.surefire.tests'
+
+                }   
+            }
+        }
         
+    }
+    post {
+        always {
+            //olhar na syntax da pipeline e procurar por JUnit e passar o caminho 
+            junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml, api-test/target/surefire-reports/*.xml, functional-test/target/surefire-reports/*.xml, functional-test/target/failsafe-reports/*.xml '
+            //arquivando os .war no pipeline do jenkins - syntax pipeline-archiveArtifacts - avançado-arquivar artefatos apenas se o build terminar com sucesso
+            archiveArtifacts artifacts: 'target/tasks-backend.war, frontend/target/tasks.war', onlyIfSuccessful: true
+
+
+
+
+        }
     }
 }
 
